@@ -7,15 +7,35 @@ import Form from './components/Form'
 
 
 function App(props) {
+  const [tasks, setTasks] = useState(props.tasks);
+
+  function toggleTaskCompleted(id) {
+    const updatedTasks =tasks.map((task) =>{
+      if (id == task.id){
+        return {...task, completed: !task.completed};
+      }
+      return task;
+    });
+    setTasks(updatedTasks);
+
+  }
+
   function addTask(name){
     const newTask = {id:`todo-${nanoid()}`, name, completed: false};
     setTasks([...tasks, newTask]);
   }
-  const [tasks, setTasks] = useState(props.tasks);
+
   const tasklist = tasks?.map((task) => 
-  <Todo  key={task.id} id={task.id} name={task.name} completed={task.completed}/>);
+  <Todo  
+    key={task.id} 
+    id={task.id} 
+    name={task.name} 
+    completed={task.completed}
+    toggleTaskCompleted={toggleTaskCompleted}/>);
+  
   const tasksNoun =tasklist.length !== 1 ? "tasks": "task";
   const headingText = `${tasklist.length} ${tasksNoun} remaining`
+ 
   return (
     <div className="todoapp stack-large">
       <h1>TodoMatic</h1>
