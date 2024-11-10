@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function Todo(props) {
     const [isEditing, setEditing] = useState(false);
     const [newName, setNewName] = useState("");
+    const editFileRef = useRef(null);
+    const editButtonRef = useRef(null);
     
     function handleChange(e) {
       setNewName(e.target.value);
@@ -14,13 +16,20 @@ function Todo(props) {
       setNewName("");
       setEditing(false);
     }
+
     const editingTemplate = (
       <form className="stack-small" onSubmit={handleSubmit}>
         <div className="form-group">
           <label className="todo-label" htmlFor={props.id}>
             New name for {props.name}
           </label>
-          <input id={props.id} className="todo-text" type="text" value={newName} onChange={handleChange}/>
+          <input 
+          id={props.id} 
+          className="todo-text" 
+          type="text" 
+          value={newName} 
+          onChange={handleChange}
+          ref={editFileRef}/>
         </div>
         <div className="btn-group">
           <button type="button" className="btn todo-cancel" onClick={() => setEditing(false)}>
@@ -48,7 +57,11 @@ function Todo(props) {
           </label>
         </div>
         <div className="btn-group">
-          <button type="button" className="btn" onClick={() => setEditing(true)}>
+          <button 
+          type="button" 
+          className="btn" 
+          onClick={() => setEditing(true)}
+          ref={editButtonRef}>
             Edit <span className="visually-hidden">{props.name}</span>
           </button>
           <button
@@ -60,7 +73,11 @@ function Todo(props) {
         </div>
       </div>
     );
-    
+    useEffect(() => {
+      if(isEditing){
+        editFileRef.current.focus();
+      }
+    }, [isEditing])
     return(
       <li className="todo">
         {isEditing ? editingTemplate : viewTemplate}
